@@ -1,70 +1,67 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: whitesmoke;}
-
 .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
     text-align: center;
-    padding: 20px;}
+}
 
 .search-container {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;}
+    margin-bottom: 20px;
+}
 
-#locationInput {
+input[type="text"] {
     padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
+    width: calc(100% - 120px);
+    margin-right: 10px;
     border: 1px solid #ccc;
-    width: 200px;}
+    border-radius: 5px;}
 
-#searchButton {
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: #007BFF;
+button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
     color: white;
-    cursor: pointer;}
+    cursor: pointer;
+    border-radius: 5px;}
 
-#searchButton:disabled {
-    background-color: #007BFF;
-    opacity: 0.5;
-    cursor: not-allowed;}
-
-#searchButton:hover:enabled {
-    background-color: #0056b3;}
-
-.error {
-    color: red;}
+button:disabled {
+    background-color: #aaa;}
 
 .weather-info {
-    margin-top: 20px;
-    display: inline-block;
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
-    text-align: center;}
-
-#weather-image {
-    display: block;
-    margin: 0 auto;
-    width: 100px;
-    height: auto;}
-
-.weather-info p {
-    margin: 5px 0; }
+    text-align: left;}
 
 .weather-info h2 {
-    margin: 10px 0; }
+    grid-column: span 2;
+    text-align: center;}
 
-@media (max-width: 600px) {
-    #locationInput, #searchButton {
-        width: 100%;
-        box-sizing: border-box;
-    }
+.weather-info img {
+    width: 100px;
+    height: 100px;
+    grid-column: span 2;
+    margin: 0 auto;}
 
-    .weather-info {
-        width: 90%;
-    }}
+.weather-info p {
+    margin: 5px 0;}
+
+.weather-description {
+    grid-column: span 2;
+    text-align: center;
+    margin-top: 10px;}
+
+.weather-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;}
+
+.error {
+    color: red;
+}
