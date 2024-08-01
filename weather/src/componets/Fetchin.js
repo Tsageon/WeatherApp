@@ -20,20 +20,22 @@ const Fetching = () => {
 
             if (response.ok) {
                 setWeather({
-                    location: data.name, 
-                    temperature: data.main.temp, 
+                    location: data.name,
+                    temperature: data.main.temp,
                     feels_like: data.main.feels_like,
-                    temp_min: data.main.temp_min, 
-                    temp_max: data.main.temp_max, 
-                    pressure: data.main.pressure, 
+                    temp_min: data.main.temp_min,
+                    temp_max: data.main.temp_max,
+                    pressure: data.main.pressure,
                     humidity: data.main.humidity,
-                    wind_speed: data.wind.speed, 
-                    wind_deg: data.wind.deg, 
-                    visibility: data.visibility, 
-                    description: data.weather[0].description,});
+                    wind_speed: data.wind.speed,
+                    wind_deg: data.wind.deg,
+                    visibility: data.visibility,
+                    description: data.weather[0].description,
+                });
             } else {
                 setError(data.message || 'Something went wrong. Please try again.');
-                setWeather({});}
+                setWeather({});
+            }
         } catch (error) {
             setError('Failed to get weather data. Please try again.');
             setWeather({});
@@ -45,77 +47,89 @@ const Fetching = () => {
         switch (description.toLowerCase()) {
             case 'clear sky':
                 return {
-                    url: 'https://images.app.goo.gl/QUHnr2yKeJ1a36GB9',
+                    url: 'https://www.weatherbit.io/static/img/icons/c01d.png',
                     alt: 'Clear Skies',
-                    explanation: 'The sky is clear with no clouds.'};
+                    explanation: 'The sky is clear with no clouds.',};
             case 'few clouds':
+                return {
+                    url: 'https://www.weatherbit.io/static/img/icons/c02d.png',
+                    alt: 'Few Clouds',
+                    explanation: 'There are a few clouds in the sky.',};
             case 'scattered clouds':
-            case 'broken clouds':
-            case 'clouds':
                 return {
-                    url: 'https://images.app.goo.gl/tyPctWf1GURVHUCr8',
-                    alt: 'Cloudy',
-                    explanation: 'The sky is partly/fully covered with clouds.'};
-            // eslint-disable-next-line no-duplicate-case
+                    url: 'https://www.weatherbit.io/static/img/icons/c02d.png',
+                    alt: 'Scattered Clouds',
+                    explanation: 'There are scattered clouds in the sky.',};
             case 'broken clouds':
                 return {
-                    url: 'https://images.app.goo.gl/aJT9Cus8bMQvqQcN6',
+                    url: 'https://www.weatherbit.io/static/img/icons/c03d.png',
                     alt: 'Broken Clouds',
-                    explanation: 'The sky is mostly covered with clouds but sunshine still shinning through.'};
+                    explanation: 'The sky is mostly covered with clouds but sunshine still shines through.',};
             case 'overcast clouds':
                 return {
-                    url: 'https://images.app.goo.gl/tyPctWf1GURVHUCr8',
+                    url: 'https://www.weatherbit.io/static/img/icons/c04d.png',
                     alt: 'Overcast Clouds',
-                    explanation: 'The sky is completely covered with clouds.'};
+                    explanation: 'The sky is completely covered with clouds.',};
             case 'shower rain':
+                return {
+                    url: 'https://www.weatherbit.io/static/img/icons/r01d.png',
+                    alt: 'Shower Rain',
+                    explanation: 'There is light rain.',};
             case 'rain':
                 return {
-                    url: 'https://images.app.goo.gl/Bu5mGia7Zn2yT3Kk8',
+                    url: 'https://www.weatherbit.io/static/img/icons/r01d.png',
                     alt: 'Rain',
-                    explanation: 'It is raining with varying intensity.'};
+                    explanation: 'It is raining with varying intensity.',};
+            case 'light rain':
+                return {
+                    url: 'https://www.weatherbit.io/static/img/icons/r01d.png',
+                    alt: 'Light Rain',
+                    explanation: 'There is light rain.',};
             case 'thunderstorm':
                 return {
-                    url: 'https://images.app.goo.gl/BpvKAR1mZcz5zzh6A',
+                    url: 'https://www.weatherbit.io/static/img/icons/t01d.png',
                     alt: 'Thunderstorm',
-                    explanation: 'Thunderstorm INCOMING!'};
+                    explanation: 'There are thunderstorms in the area.',};
             case 'snow':
                 return {
-                    url: 'https://images.app.goo.gl/YucitP5WKo9uJBc19',
+                    url: 'https://www.weatherbit.io/static/img/icons/s01d.png',
                     alt: 'Snow',
-                    explanation: 'It is snowing.'};
+                    explanation: 'It is snowing.',};
             case 'mist':
                 return {
-                    url: 'https://images.app.goo.gl/d7nRhhNMjf8pTWde9',
+                    url: 'https://www.weatherbit.io/static/img/icons/a01d.png',
                     alt: 'Mist',
-                    explanation: 'It is misty, prepare for reduced visibility.'};
+                    explanation: 'It is misty, prepare for reduced visibility.',};
             case 'sunny':
                 return {
-                    url: 'https://images.app.goo.gl/T8HysMefku6VjRpv9',
+                    url: 'https://www.weatherbit.io/static/img/icons/c01d.png',
                     alt: 'Sunny',
-                    explanation: 'The weather is sunny and clear.'};
+                    explanation: 'The weather is sunny and clear.',};
             default:
                 return {
                     url: 'https://img.icons8.com/?size=100&id=HvsrTtUGylxy&format=png&color=000000',
                     alt: 'Default Weather',
-                    explanation: 'Weather image not available.'};
+                    explanation: 'Weather image is not available.',};
         }
     };
 
     return (
         <div className="container">
             <h1>Weather App</h1>
-            <input 
-                type="text" 
-                id="locationInput"
-                placeholder="Enter a city" 
-                value={location} 
-                onChange={(e) => setLocation(e.target.value)}/>
-            <button id="searchButton" onClick={handleSearch} disabled={loading}>
-                {loading ? 'Loading...Please wait...' : 'Search'}
-            </button>
+            <div className="search-container">
+                <input
+                    type="text"
+                    id="locationInput"
+                    placeholder="Enter a city"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}/>
+                <button id="searchButton" onClick={handleSearch} disabled={loading}>
+                    {loading ? 'Loading...' : 'Search'}
+                </button>
+            </div>
             {error && <p className="error">{error}</p>}
             {weather.location && (
-                <div className="weather-info">
+                <div className="weather-info" aria-live="polite">
                     <h2 id="location">{weather.location}</h2>
                     <p id="temperature">Temperature: {weather.temperature}°C</p>
                     <p id="feels_like">Feels Like: {weather.feels_like}°C</p>
@@ -127,15 +141,15 @@ const Fetching = () => {
                     <p id="wind_deg">Wind Direction: {weather.wind_deg}°</p>
                     <p id="visibility">Visibility: {weather.visibility} m</p>
                     <p id="description">Weather: {weather.description}</p>
-                    <img 
-                        id="weather-image" 
-                        src={getWeatherImage(weather.description).url} 
-                        alt={getWeatherImage(weather.description).alt}/>
+                    <img
+                        id="weather-image"
+                        src={getWeatherImage(weather.description).url}
+                        alt={getWeatherImage(weather.description).alt}
+                    />
                     <p>{getWeatherImage(weather.description).explanation}</p>
                 </div>
             )}
         </div>
-    );
-};
+    );};
 
 export default Fetching;
