@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import './Fetchin.css';
 
 const Fetching = () => {
@@ -6,7 +6,55 @@ const Fetching = () => {
     const [weather, setWeather] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [lat, setLat] = useState(null);
+    const [long, setLong] = useState(null);
+
     const Api_Key = '47dd65ecabe0cf32fae0116841fa5da5';
+
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            setLat(position.coords.latitude);
+            setLong(position.coords.longitude);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (lat && long) {
+            const fetchWeather = async () => {
+                setLoading(true);
+                try {
+                    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${Api_Key}&units=metric`);
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                        setWeather({
+                            location: data.name,
+                            temperature: data.main.temp,
+                            feels_like: data.main.feels_like,
+                            temp_min: data.main.temp_min,
+                            temp_max: data.main.temp_max,
+                            pressure: data.main.pressure,
+                            humidity: data.main.humidity,
+                            wind_speed: data.wind.speed,
+                            wind_deg: data.wind.deg,
+                            visibility: data.visibility,
+                            description: data.weather[0].description,
+                        });
+                    } else {
+                        setError(data.message || 'Something went wrong. Please try again.');
+                        setWeather({});
+                    }
+                } catch (error) {
+                    setError('Failed to get weather data. Please try again.');
+                    setWeather({});
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchWeather();
+        }
+    }, [lat, long]);
 
     const handleSearch = async () => {
         if (!location.trim()) return;
@@ -43,6 +91,9 @@ const Fetching = () => {
             setLoading(false);
         }
     };
+
+
+   
 
     const getWeatherImage = (description) => {
         switch (description.toLowerCase()) {
