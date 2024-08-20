@@ -1,32 +1,35 @@
 .container {
-    width: 80%;
+    width: 100%;
+    max-width: 1200px; /* Limit the max-width for larger screens */
     margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  .heading {
+    padding: 20px;
+}
+
+.heading {
     text-align: center;
     margin-bottom: 20px; 
-  }
-  
-  .search-container {
+}
+
+.search-container {
     display: flex;
     justify-content: center;
     width: 100%; 
     margin-bottom: 20px;
-  }
-  
-  .search-container input {
+}
+
+.search-container input {
     padding: 10px;
     font-size: 16px;
-    width: 30%;
+    width: 100%;
+    max-width: 300px; /* Limit width for better control */
     border: 1px solid #ccc;
     border-radius: 15px;
-  }
-  
-  .search-container button {
+}
+
+.search-container button {
     padding: 10px;
     font-size: 16px;
     margin-left: 10px;
@@ -35,81 +38,99 @@
     color: white;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .search-container button:disabled {
+}
+
+.search-container button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
-  }
-  
-  .error {
+}
+
+.error {
     color: red;
     text-align: center;
     margin-top: 10px; 
-  }
-  
-  .main-content {
+}
+
+.main-content {
     display: grid;
     justify-content: center;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
     width: 100%; 
-  }
-  
-  .weather-info {
+}
+
+.weather-info {
     background: #f4f4f4;
     padding: 20px; 
     border-radius: 18px;
     text-align: center;
-  }
-  
-  .weather-details {
+}
+
+.weather-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px; 
     text-align: center;
-  }
-  
-  .weather-details p {
+}
+
+.weather-details p {
     margin: 5px 0;
     text-align: center;
-  }
-  
-  
-  .surrounding-provinces {
+}
+
+.surrounding-provinces {
     background: #f4f4f4;
     padding: 20px;
     border-radius: 8px;
     text-align: center; 
-  }
-  
-  .surrounding-provinces ul {
+}
+
+.surrounding-provinces ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  .surrounding-provinces li {
+}
+
+.surrounding-provinces li {
     margin: 10px 0;
-  }
-  .Heading{
-    justify-self: center;
-    margin-left: 250px;
-  }
-  .hourly-forecast {
-    margin-top: 20px;
-    padding: auto;
-  }
-  
-  .hourly-list {
+}
+
+.forecast-container {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-  }
-  
-  .hourly-item {
-    background: #f4f4f4;
-    padding: 10px;
-    border-radius: 8px;
+    flex-wrap: wrap; 
+    gap: 20px;
+    width: 100%; 
+    margin-top: 20px;
+}
+
+.forecast, .hourly-forecast {
+    flex: 1; 
+    min-width: 280px; 
+}
+
+.forecast-list, .hourly-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.forecast-item, .hourly-item {
     text-align: center;
-  }
-  
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    flex: 1; 
+    min-width: 80px;
+    margin: 5px;
+}
+
+.forecast-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.forecast-item p, .hourly-item p {
+    margin: 5px 0;
+}
+

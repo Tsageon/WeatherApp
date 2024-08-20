@@ -6,31 +6,19 @@ const API_KEY = '47dd65ecabe0cf32fae0116841fa5da5';
 const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
-const NEARBY_CITIES = [
-  { name: 'Hartswater', lat: -27.767, lon: 24.817 },
-  { name: 'Barkly West', lat: -28.4512448, lon: 24.514946433333 },
-  { name: 'Douglas', lat: -29.0500, lon: 23.7667 },
-  { name: 'Delportshoop', lat: -28.3989483, lon: 24.2984857 },
-  { name: 'Griquatown', lat: -28.430, lon: 23.182 },
-  { name: 'Postmasburg', lat: -27.592, lon: 23.074 }, 
-  { name: 'Colesberg', lat: -30.675, lon: 24.751 },
-  { name: 'Carnarvon', lat: -30.982, lon: 22.587 },
-  { name: 'Victoria West', lat: -30.624, lon: 22.481 },
-  { name: 'Williston', lat: -30.214, lon: 19.253 },
-  { name: 'Sutherland', lat: -32.383, lon: 20.103 },
-  { name: 'Garies', lat: -30.633, lon: 17.016 },
-
-];
+const NEARBY_CITIES = [];
 
 const Fetching = () => {
   const [location, setLocation] = useState('');
   const [weather, setWeather] = useState({});
   const [hourlyForecast, setHourlyForecast] = useState([]);
   const [surroundingProvinces, setSurroundingProvinces] = useState([]);
+  const [fiveDayForecast, setFiveDayForecast] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
+  const [forecastLocation, setForecastLocation] = useState('');
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -49,9 +37,18 @@ const Fetching = () => {
     try {
       const weatherResponse = await axios.get(`${WEATHER_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
       setWeather(formatWeatherData(weatherResponse.data));
-
+      setForecastLocation(weatherResponse.data.name); 
       const forecastResponse = await axios.get(`${FORECAST_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
       setHourlyForecast(forecastResponse.data.list.slice(0, 5));
+      
+      const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
+      const formattedDailyData = dailyData.map((day) => ({
+        date: day.dt_txt,
+        icon: day.weather[0].icon,
+        description: day.weather[0].description,
+        temp: day.main.temp,
+      }));
+      setFiveDayForecast(formattedDailyData);
 
       const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
         axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
@@ -87,9 +84,19 @@ const Fetching = () => {
     try {
       const weatherResponse = await axios.get(`${WEATHER_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`);
       setWeather(formatWeatherData(weatherResponse.data));
+      setForecastLocation(weatherResponse.data.name); 
 
       const forecastResponse = await axios.get(`${FORECAST_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`);
       setHourlyForecast(forecastResponse.data.list.slice(0, 5));
+      
+      const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
+      const formattedDailyData = dailyData.map((day) => ({
+        date: day.dt_txt,
+        icon: day.weather[0].icon,
+        description: day.weather[0].description,
+        temp: day.main.temp,
+      }));
+      setFiveDayForecast(formattedDailyData);
 
       const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
         axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
@@ -131,26 +138,6 @@ const Fetching = () => {
     return `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
   };
 
-  const getWeatherImage = (description) => {
-    const images = {
-      'clear sky': 'https://www.weatherbit.io/static/img/icons/c01d.png',
-      'few clouds': 'https://www.weatherbit.io/static/img/icons/c02d.png',
-      'scattered clouds': 'https://www.weatherbit.io/static/img/icons/c02d.png',
-      'broken clouds': 'https://www.weatherbit.io/static/img/icons/c03d.png',
-      'overcast clouds': 'https://www.weatherbit.io/static/img/icons/c04d.png',
-      'shower rain': 'https://www.weatherbit.io/static/img/icons/r01d.png',
-      'rain': 'https://www.weatherbit.io/static/img/icons/r01d.png',
-      'light rain': 'https://www.weatherbit.io/static/img/icons/r01d.png',
-      'thunderstorm': 'https://www.weatherbit.io/static/img/icons/t01d.png',
-      'snow': 'https://www.weatherbit.io/static/img/icons/s01d.png',
-      'mist': 'https://www.weatherbit.io/static/img/icons/a01d.png',
-      'sunny': 'https://www.weatherbit.io/static/img/icons/c01d.png',
-    };
-  
-    return images[description] || 'https://www.weatherbit.io/static/img/icons/c01d.png';
-  };
-  
-
   return (
     <div className="container">
       <h1 className='heading'>Weather App</h1>
@@ -169,9 +156,7 @@ const Fetching = () => {
         {weather.location && (
           <div className="weather-info">
             <h2>{weather.location}</h2>
-            <img src={getWeatherIconUrl(weather.icon)}
-                 alt={weather.description}/>
-            <p>{getWeatherImage(weather.description).explanation}</p>
+            <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
             <div className="weather-details">
               <p>Description: {weather.description}</p>
               <p>Temperature: {weather.temperature}°C</p>
@@ -183,7 +168,7 @@ const Fetching = () => {
               <p>Wind Speed: {weather.wind_speed} m/s</p>
               <p>Wind Direction: {weather.wind_deg}°</p>
               <p>Visibility: {weather.visibility / 1000} km</p>
-              </div>
+            </div>
           </div>
         )}
 
@@ -199,23 +184,46 @@ const Fetching = () => {
             </ul>
           </div>
         )}
-      </div>
 
-      {hourlyForecast.length > 0 && (
-        <div className="hourly-forecast">
-          <h3 className='Heading'>Hourly Forecast</h3>
-          <div className="hourly-list">
-            {hourlyForecast.map((hour, index) => (
-              <div key={index} className="hourly-item">
-                <p>{new Date(hour.dt_txt).getHours()}:00</p>
-                <p>{hour.main.temp}°C</p>
-                <img src={getWeatherIconUrl(hour.weather[0].icon)}
-                     alt={hour.weather[0].description}/>
-              </div>
-            ))}
+        {hourlyForecast.length > 0 && (
+          <div className="hourly-forecast">
+            <h3 className='Heading'>Hourly Forecast for {forecastLocation}</h3>
+            <div className="hourly-list">
+              {hourlyForecast.map((hour, index) => (
+                <div key={index} className="hourly-item">
+                  <p>{new Date(hour.dt_txt).getHours()}:00</p>
+                  <p>{hour.main.temp}°C</p>
+                  <img src={getWeatherIconUrl(hour.weather[0].icon)} alt={hour.weather[0].description} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {fiveDayForecast.length > 0 && (
+          <div className="forecast">
+            <h2>5-Day Forecast for {forecastLocation}</h2>
+            <div className="forecast-list">
+              {fiveDayForecast.map((day, index) => {
+                const date = new Date(day.date);
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                return (
+                  <div key={index} className="forecast-item">
+                    <p>{dayOfWeek}, {date.toLocaleDateString()}</p>
+                    <img
+                      src={`http://openweathermap.org/img/wn/${day.icon}.png`}
+                      alt={day.description}
+                      className="forecast-icon"
+                    />
+                    <p>{day.description}</p>
+                    <p>{day.temp}°C</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
