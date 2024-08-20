@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import './Fetchin.css';
+import './Fetchin.css'; 
 
 const API_KEY = '47dd65ecabe0cf32fae0116841fa5da5';
 const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
-const NEARBY_CITIES = [];
+const NEARBY_CITIES = [
+  { name: 'City1', lat: 40.7128, lon: -74.0060 },
+  { name: 'City2', lat: 34.0522, lon: -118.2437 },
+  { name: 'City3', lat: 41.8781, lon: -87.6298 },
+];
 
 const Fetching = () => {
   const [location, setLocation] = useState('');
@@ -146,7 +150,8 @@ const Fetching = () => {
           type="text"
           placeholder="Enter a city"
           value={location}
-          onChange={(e) => setLocation(e.target.value)}/>
+          onChange={(e) => setLocation(e.target.value)}
+        />
         <button onClick={fetchWeather} disabled={loading}>
           {loading ? 'Loading...' : 'Search'}
         </button>
@@ -187,7 +192,7 @@ const Fetching = () => {
 
         {hourlyForecast.length > 0 && (
           <div className="hourly-forecast">
-            <h3 className='Heading'>Hourly Forecast for {forecastLocation}</h3>
+            <h3 className='heading'>Hourly Forecast for {forecastLocation}</h3>
             <div className="hourly-list">
               {hourlyForecast.map((hour, index) => (
                 <div key={index} className="hourly-item">
@@ -201,25 +206,17 @@ const Fetching = () => {
         )}
 
         {fiveDayForecast.length > 0 && (
-          <div className="forecast">
-            <h2>5-Day Forecast for {forecastLocation}</h2>
+          <div className="five-day-forecast">
+            <h3 className='heading'>5-Day Forecast</h3>
             <div className="forecast-list">
-              {fiveDayForecast.map((day, index) => {
-                const date = new Date(day.date);
-                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-                return (
-                  <div key={index} className="forecast-item">
-                    <p>{dayOfWeek}, {date.toLocaleDateString()}</p>
-                    <img
-                      src={`http://openweathermap.org/img/wn/${day.icon}.png`}
-                      alt={day.description}
-                      className="forecast-icon"
-                    />
-                    <p>{day.description}</p>
-                    <p>{day.temp}°C</p>
-                  </div>
-                );
-              })}
+              {fiveDayForecast.map((day, index) => (
+                <div key={index} className="forecast-item">
+                  <p>{new Date(day.date).toLocaleDateString()}</p>
+                  <p>{day.temp}°C</p>
+                  <img src={getWeatherIconUrl(day.icon)} alt={day.description} />
+                  <p>{day.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         )}
