@@ -7,10 +7,15 @@ const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
 const NEARBY_CITIES = [
-  { name: 'City1', lat: 40.7128, lon: -74.0060 },
-  { name: 'City2', lat: 34.0522, lon: -118.2437 },
-  { name: 'City3', lat: 41.8781, lon: -87.6298 },
-];
+  { name: 'Upington', lat: -28.4520, lon: 21.2561 },
+  { name: 'Springbok', lat: -29.6643, lon: 17.8865 },
+  { name: 'Kuruman', lat: -27.4498, lon: 23.4308 },
+  { name: 'De Aar', lat: -30.6496, lon: 24.0146 },
+  { name: 'Colesberg', lat: -30.7197, lon: 25.0978 },
+  { name: 'Calvinia', lat: -31.4728, lon: 19.7764 },
+  { name: 'Douglas', lat: -29.0601, lon: 23.7732 },
+  { name: 'Kakamas', lat: -28.7746, lon: 20.6173 },{ name: 'Port Nolloth', lat: -29.2498, lon: 16.8681 },
+  { name: 'Hartswater', lat: -27.7351, lon: 24.7961 },{ name: 'Kathu', lat: -27.6957, lon: 23.0471 }];
 
 const Fetching = () => {
   const [location, setLocation] = useState('');
@@ -32,8 +37,7 @@ const Fetching = () => {
       },
       (err) => {
         setError('Unable to retrieve location. Please allow location access or enter a city.');
-      }
-    );
+      });
   }, []);
 
   const fetchWeatherByCoordinates = useCallback(async (latitude, longitude) => {
@@ -48,6 +52,7 @@ const Fetching = () => {
       const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
       const formattedDailyData = dailyData.map((day) => ({
         date: day.dt_txt,
+        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
         icon: day.weather[0].icon,
         description: day.weather[0].description,
         temp: day.main.temp,
@@ -59,8 +64,7 @@ const Fetching = () => {
           .then(response => ({
             name: city.name,
             temperature: response.data.main.temp,
-          }))
-      );
+          })));
       const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
       setSurroundingProvinces(nearbyWeatherData);
 
@@ -96,6 +100,7 @@ const Fetching = () => {
       const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
       const formattedDailyData = dailyData.map((day) => ({
         date: day.dt_txt,
+        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
         icon: day.weather[0].icon,
         description: day.weather[0].description,
         temp: day.main.temp,
@@ -107,8 +112,7 @@ const Fetching = () => {
           .then(response => ({
             name: city.name,
             temperature: response.data.main.temp,
-          }))
-      );
+          })));
       const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
       setSurroundingProvinces(nearbyWeatherData);
 
@@ -120,8 +124,7 @@ const Fetching = () => {
       setSurroundingProvinces([]);
     } finally {
       setLoading(false);
-    }
-  };
+    }};
 
   const formatWeatherData = (data) => ({
     location: data.name,
@@ -135,8 +138,7 @@ const Fetching = () => {
     wind_deg: data.wind.deg,
     visibility: data.visibility,
     description: data.weather[0].description,
-    icon: data.weather[0].icon,
-  });
+    icon: data.weather[0].icon,});
 
   const getWeatherIconUrl = (iconCode) => {
     return `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
@@ -150,10 +152,9 @@ const Fetching = () => {
           type="text"
           placeholder="Enter a city"
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
+          onChange={(e) => setLocation(e.target.value)}/>
         <button onClick={fetchWeather} disabled={loading}>
-          {loading ? 'Loading...' : 'Search'}
+          {loading ? 'Give me a sec...' : 'Search'}
         </button>
       </div>
       {error && <p className="error">{error}</p>}
@@ -182,9 +183,7 @@ const Fetching = () => {
             <h3>Nearby Cities</h3>
             <ul>
               {surroundingProvinces.map((city, index) => (
-                <li key={index}>
-                  <b>{city.name}:</b> {city.temperature}°C
-                </li>
+                <li key={index}><b>{city.name}:</b> {city.temperature}°C</li>
               ))}
             </ul>
           </div>
@@ -193,12 +192,13 @@ const Fetching = () => {
         {hourlyForecast.length > 0 && (
           <div className="hourly-forecast">
             <h3 className='heading'>Hourly Forecast for {forecastLocation}</h3>
-            <div className="hourly-list">
-              {hourlyForecast.map((hour, index) => (
-                <div key={index} className="hourly-item">
-                  <p>{new Date(hour.dt_txt).getHours()}:00</p>
-                  <p>{hour.main.temp}°C</p>
-                  <img src={getWeatherIconUrl(hour.weather[0].icon)} alt={hour.weather[0].description} />
+            <div className="hourly-forecast-grid">
+              {hourlyForecast.map((forecast, index) => (
+                <div key={index} className="forecast-item">
+                  <p>{new Date(forecast.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  <img src={getWeatherIconUrl(forecast.weather[0].icon)} alt={forecast.weather[0].description} />
+                  <p>{forecast.main.temp}°C</p>
+                  <p>{forecast.weather[0].description}</p>
                 </div>
               ))}
             </div>
@@ -207,13 +207,14 @@ const Fetching = () => {
 
         {fiveDayForecast.length > 0 && (
           <div className="five-day-forecast">
-            <h3 className='heading'>5-Day Forecast</h3>
-            <div className="forecast-list">
+            <h3 className='heading'>5-Day Forecast for {forecastLocation}</h3>
+            <div className="forecast-grid">
               {fiveDayForecast.map((day, index) => (
                 <div key={index} className="forecast-item">
-                  <p>{new Date(day.date).toLocaleDateString()}</p>
-                  <p>{day.temp}°C</p>
+                  <p className="day">{day.dayOfWeek}</p>
+                  <p className="date">{new Date(day.date).toLocaleDateString()}</p>
                   <img src={getWeatherIconUrl(day.icon)} alt={day.description} />
+                  <p>{day.temp}°C</p>
                   <p>{day.description}</p>
                 </div>
               ))}
@@ -223,6 +224,6 @@ const Fetching = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Fetching;
