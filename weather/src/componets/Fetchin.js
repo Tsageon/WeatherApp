@@ -36,7 +36,7 @@ const Fetching = () => {
         setLong(position.coords.longitude);
       },
       (err) => {
-        setError('Unable to retrieve location. Please allow location access or enter a city.');
+        setError('Unable To Retrieve Location. Please Allow Location Access or Enter a City.');
       });
   }, []);
 
@@ -70,7 +70,7 @@ const Fetching = () => {
 
       setError(null);
     } catch (err) {
-      setError('Error fetching weather data.');
+      setError('Error Fetching Weather Data.');
       setWeather({});
       setHourlyForecast([]);
       setSurroundingProvinces([]);
@@ -118,7 +118,7 @@ const Fetching = () => {
 
       setError(null);
     } catch (err) {
-      setError('Error fetching weather data.');
+      setError('Error Fetching Weather Data.');
       setWeather({});
       setHourlyForecast([]);
       setSurroundingProvinces([]);
@@ -148,14 +148,10 @@ const Fetching = () => {
     <div className="container">
       <h1 className='heading'>Weather App</h1>
       <div className="search-container">
-        <input
-          type="text"
+        <input type="text"
           placeholder="Enter a city"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}/>
-        <button onClick={fetchWeather} disabled={loading}>
-          {loading ? 'Give me a sec...' : 'Search'}
-        </button>
+          value={location} onChange={(e) => setLocation(e.target.value)}/>
+        <button onClick={fetchWeather} disabled={loading}>{loading ? 'Give me a sec...' : 'Search'}</button>
       </div>
       {error && <p className="error">{error}</p>}
       <div className="main-content">
@@ -164,16 +160,11 @@ const Fetching = () => {
             <h2>{weather.location}</h2>
             <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
             <div className="weather-details">
-              <p>Description: {weather.description}</p>
-              <p>Temperature: {weather.temperature}°C</p>
-              <p>Feels Like: {weather.feels_like}°C</p>
-              <p>Min Temp: {weather.temp_min}°C</p>
-              <p>Max Temp: {weather.temp_max}°C</p>
-              <p>Pressure: {weather.pressure} hPa</p>
-              <p>Humidity: {weather.humidity}%</p>
-              <p>Wind Speed: {weather.wind_speed} m/s</p>
-              <p>Wind Direction: {weather.wind_deg}°</p>
-              <p>Visibility: {weather.visibility / 1000} km</p>
+              <p>Description: {weather.description}</p><p>Temperature: {weather.temperature}°C</p>
+              <p>Feels Like: {weather.feels_like}°C</p><p>Min Temp: {weather.temp_min}°C</p>
+              <p>Max Temp: {weather.temp_max}°C</p><p>Pressure: {weather.pressure} hPa</p>
+              <p>Humidity: {weather.humidity}%</p><p>Wind Speed: {weather.wind_speed} m/s</p>
+              <p>Wind Direction: {weather.wind_deg}°</p><p>Visibility: {weather.visibility / 1000} km</p>
             </div>
           </div>
         )}
@@ -181,12 +172,9 @@ const Fetching = () => {
         {surroundingProvinces.length > 0 && (
           <div className="surrounding-provinces">
             <h3>Nearby Cities</h3>
-            <ul>
-              {surroundingProvinces.map((city, index) => (
+            <ul>{surroundingProvinces.map((city, index) => (
                 <li key={index}><b>{city.name}:</b> {city.temperature}°C</li>
-              ))}
-            </ul>
-          </div>
+              ))}</ul></div>
         )}
 
         {hourlyForecast.length > 0 && (
@@ -196,9 +184,8 @@ const Fetching = () => {
               {hourlyForecast.map((forecast, index) => (
                 <div key={index} className="forecast-item">
                   <p>{new Date(forecast.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                  <img src={getWeatherIconUrl(forecast.weather[0].icon)} alt={forecast.weather[0].description} />
-                  <p>{forecast.main.temp}°C</p>
-                  <p>{forecast.weather[0].description}</p>
+                  <img src={getWeatherIconUrl(forecast.weather[0].icon)} alt={forecast.weather[0].description}/>
+                  <p>{forecast.main.temp}°C</p><p>{forecast.weather[0].description}</p>
                 </div>
               ))}
             </div>
@@ -211,11 +198,9 @@ const Fetching = () => {
             <div className="forecast-grid">
               {fiveDayForecast.map((day, index) => (
                 <div key={index} className="forecast-item">
-                  <p className="day">{day.dayOfWeek}</p>
-                  <p className="date">{new Date(day.date).toLocaleDateString()}</p>
+                  <p className="day">{day.dayOfWeek}</p><p className="date">{new Date(day.date).toLocaleDateString()}</p>
                   <img src={getWeatherIconUrl(day.icon)} alt={day.description} />
-                  <p>{day.temp}°C</p>
-                  <p>{day.description}</p>
+                  <p>{day.temp}°C</p><p>{day.description}</p>
                 </div>
               ))}
             </div>
