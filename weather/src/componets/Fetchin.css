@@ -29,7 +29,7 @@ body{background-color: lightblue;}
     padding: 10px;
     font-size: 16px;
     margin-left: 10px;
-    border: 1px solid black;
+    border: black;
     background-color:blue;
     color: white;
     border-radius: 10px;
@@ -38,7 +38,7 @@ body{background-color: lightblue;}
 .search-container button:disabled {
     background-color: whitesmoke;
     cursor: not-allowed;}
-
+.search-container button:hover{background-color:grey }
 .error {
     color: red;
     text-align: center;
