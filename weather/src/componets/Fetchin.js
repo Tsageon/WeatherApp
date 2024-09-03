@@ -7,13 +7,9 @@ const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
 const NEARBY_CITIES = [
-  { name: 'Upington', lat: -28.4520, lon: 21.2561 },
-  { name: 'Springbok', lat: -29.6643, lon: 17.8865 },
-  { name: 'Kuruman', lat: -27.4498, lon: 23.4308 },
-  { name: 'De Aar', lat: -30.6496, lon: 24.0146 },
-  { name: 'Colesberg', lat: -30.7197, lon: 25.0978 },
-  { name: 'Calvinia', lat: -31.4728, lon: 19.7764 },
-  { name: 'Douglas', lat: -29.0601, lon: 23.7732 },
+  { name: 'Upington', lat: -28.4520, lon: 21.2561 }, { name: 'Springbok', lat: -29.6643, lon: 17.8865 }, { name: 'Kuruman', lat: -27.4498, lon: 23.4308 },
+  { name: 'De Aar', lat: -30.6496, lon: 24.0146 }, { name: 'Colesberg', lat: -30.7197, lon: 25.0978 },
+  { name: 'Calvinia', lat: -31.4728, lon: 19.7764 }, { name: 'Douglas', lat: -29.0601, lon: 23.7732 },
   { name: 'Kakamas', lat: -28.7746, lon: 20.6173 },{ name: 'Port Nolloth', lat: -29.2498, lon: 16.8681 },
   { name: 'Hartswater', lat: -27.7351, lon: 24.7961 },{ name: 'Kathu', lat: -27.6957, lon: 23.0471 }];
 
@@ -51,20 +47,15 @@ const Fetching = () => {
       
       const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
       const formattedDailyData = dailyData.map((day) => ({
-        date: day.dt_txt,
-        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
-        icon: day.weather[0].icon,
-        description: day.weather[0].description,
-        temp: day.main.temp,
+        date: day.dt_txt,dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
+        icon: day.weather[0].icon,description: day.weather[0].description,temp: day.main.temp,
       }));
       setFiveDayForecast(formattedDailyData);
 
       const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
         axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
           .then(response => ({
-            name: city.name,
-            temperature: response.data.main.temp,
-          })));
+            name: city.name,temperature: response.data.main.temp,})));
       const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
       setSurroundingProvinces(nearbyWeatherData);
 
@@ -99,20 +90,14 @@ const Fetching = () => {
       
       const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
       const formattedDailyData = dailyData.map((day) => ({
-        date: day.dt_txt,
-        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
-        icon: day.weather[0].icon,
-        description: day.weather[0].description,
-        temp: day.main.temp,
-      }));
+        date: day.dt_txt,dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
+        icon: day.weather[0].icon,description: day.weather[0].description,temp: day.main.temp,}));
       setFiveDayForecast(formattedDailyData);
 
       const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
         axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
           .then(response => ({
-            name: city.name,
-            temperature: response.data.main.temp,
-          })));
+            name: city.name,temperature: response.data.main.temp,})));
       const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
       setSurroundingProvinces(nearbyWeatherData);
 
@@ -127,22 +112,13 @@ const Fetching = () => {
     }};
 
   const formatWeatherData = (data) => ({
-    location: data.name,
-    temperature: data.main.temp,
-    feels_like: data.main.feels_like,
-    temp_min: data.main.temp_min,
-    temp_max: data.main.temp_max,
-    pressure: data.main.pressure,
-    humidity: data.main.humidity,
-    wind_speed: data.wind.speed,
-    wind_deg: data.wind.deg,
-    visibility: data.visibility,
-    description: data.weather[0].description,
-    icon: data.weather[0].icon,});
+    location: data.name,temperature: data.main.temp,feels_like: data.main.feels_like,
+    temp_min: data.main.temp_min,temp_max: data.main.temp_max, pressure: data.main.pressure,
+    humidity: data.main.humidity,wind_speed: data.wind.speed,wind_deg: data.wind.deg,
+    visibility: data.visibility,description: data.weather[0].description,icon: data.weather[0].icon,});
 
   const getWeatherIconUrl = (iconCode) => {
-    return `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
-  };
+    return `http://openweathermap.org/img/wn/${iconCode}@2x.png`;};
 
   return (
     <div className="container">
