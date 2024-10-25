@@ -1,3 +1,36 @@
+body{
+  background-color: whitesmoke;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  background-color: #333;
+  padding: 1rem;
+}
+
+nav a {
+  color: #f1f1f1;
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin: 0 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+nav a:active {
+  background-color: #ffcc00;
+  color: #333;
+}
+
+
+
+
 .App {
   text-align: center;
 }
