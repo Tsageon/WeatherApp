@@ -55,7 +55,7 @@ const PrivacyPolicy = () => {
       <h2 style={styles.subheading}>Consent:</h2>
       <p>
         By using this application, you consent to the collection and use of your data as outlined in this policy. For more information or to review 
-        our full privacy policy, please visit <a href="[link to full privacy policy]">our full privacy policy</a>.
+        our full privacy policy, please visit <a href="https://human-rights.com">our full privacy policy</a>.
       </p>
     </div>
   );

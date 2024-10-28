@@ -32,7 +32,7 @@ const Fetching = () => {
   const [long, setLong] = useState(null);
   const [, setForecastLocation] = useState('');
   const [isFahrenheit, setIsFahrenheit] = useState(false);
-  const [theme] = useState('light');
+  const [theme, setTheme] = useState('light');
   const [, setWeatherData] = useState(null)
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -58,7 +58,7 @@ const Fetching = () => {
         })
         .then(data => {
           setWeatherData(data);
-          localStorage.setItem('weatherData', JSON.stringify(data)); 
+          localStorage.setItem('weatherData', JSON.stringify(data));
         })
         .catch(error => {
           console.error('Error fetching weather data:', error);
@@ -78,10 +78,10 @@ const Fetching = () => {
         }
       );
     } else {
-     
+
       const savedWeatherData = localStorage.getItem('weatherData');
       if (savedWeatherData) {
-        setWeatherData(JSON.parse(savedWeatherData)); 
+        setWeatherData(JSON.parse(savedWeatherData));
       } else {
         setError('No saved weather data available. Please check your internet connection and try again.');
       }
@@ -95,7 +95,7 @@ const Fetching = () => {
       const weatherResponse = await axios.get(`${WEATHER_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
       setWeather(formatWeatherData(weatherResponse.data));
       setForecastLocation(weatherResponse.data.name);
-      
+
       const forecastResponse = await axios.get(`${FORECAST_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
       setHourlyForecast(forecastResponse.data.list.slice(0, 5));
 
@@ -221,6 +221,18 @@ const Fetching = () => {
   }, [isOnline]);
 
   useEffect(() => {
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
+  useEffect(() => {
     localStorage.setItem('savedWeatherData', JSON.stringify(weather));
   }, [weather]);
 
@@ -231,11 +243,11 @@ const Fetching = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       saveWeatherData();
-    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+    }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval); // Clear the interval on component unmount
+    return () => clearInterval(interval);
   }, [weather]);
-  
+
   return (
     <div className={`container ${theme}`}>
       <h1 className='heading'>Weather App</h1>
@@ -248,30 +260,32 @@ const Fetching = () => {
         />
         <button className="search-button" onClick={fetchWeather}>Get Weather</button>
       </div>
-      <div><button className='toggle-button ' onClick={toggleTemperatureUnit}>
-          Switch to {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
-        </button></div>
+      <div className='toggle-container'> <button className="toggle-button " onClick={toggleTheme}>
+        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
+      </button><button className='toggle-button ' onClick={toggleTemperatureUnit}>
+        Switch to {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
+      </button></div>
       {loading && <p>Loading...</p>}
       {error && <p className='error'>{error}</p>}
 
       {weather.location && (
-          <div className='weather-info'>
-            <h2>{weather.location}</h2>
-            <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
-            <div className='weather-details'>
-              <p>{convertTemperature(weather.temperature)}° {isFahrenheit ? 'F' : 'C'}</p>
-              <p>Feels Like: {convertTemperature(weather.feels_like)}° {isFahrenheit ? 'F' : 'C'}</p>
-              <p>Min: {convertTemperature(weather.temp_min)}° {isFahrenheit ? 'F' : 'C'}</p>
-              <p>Max: {convertTemperature(weather.temp_max)}° {isFahrenheit ? 'F' : 'C'}</p>
-              <p>Humidity: {weather.humidity}%</p>
-              <p>Wind Speed: {weather.wind_speed} m/s</p>
-              <p>Pressure: {weather.pressure} hPa</p>
-              <p>Visibility: {weather.visibility / 1000} km</p>
-              <p>Description: {weather.description}</p>
-            </div>
+        <div className='weather-info'>
+          <h2>{weather.location}</h2>
+          <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
+          <div className='weather-details'>
+            <p>{convertTemperature(weather.temperature)}° {isFahrenheit ? 'F' : 'C'}</p>
+            <p>Feels Like: {convertTemperature(weather.feels_like)}° {isFahrenheit ? 'F' : 'C'}</p>
+            <p>Min: {convertTemperature(weather.temp_min)}° {isFahrenheit ? 'F' : 'C'}</p>
+            <p>Max: {convertTemperature(weather.temp_max)}° {isFahrenheit ? 'F' : 'C'}</p>
+            <p>Humidity: {weather.humidity}%</p>
+            <p>Wind Speed: {weather.wind_speed} m/s</p>
+            <p>Pressure: {weather.pressure} hPa</p>
+            <p>Visibility: {weather.visibility / 1000} km</p>
+            <p>Description: {weather.description}</p>
           </div>
-        )}
-      
+        </div>
+      )}
+
       <div className='container-forecast'>
         {hourlyForecast.length > 0 && (
           <div className='hourly-forecast'>
@@ -294,7 +308,7 @@ const Fetching = () => {
                 <p>{convertTemperature(day.temp)}° {isFahrenheit ? 'F' : 'C'}</p>
                 <p>Humidity: {day.humidity}%</p>
                 <p>Wind Speed: {day.wind_speed} m/s</p>
-        
+
               </div>
             ))}
           </div>
