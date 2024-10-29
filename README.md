@@ -1,5 +1,6 @@
-# Weather App :mostly_sunny:
+# Weather App ☀️
 A simple weather application built with React.js that provides real-time weather information, forecasts, and weather alerts for multiple locations. Users can view current weather conditions, forecasts, and customize their experience with different themes or units (Celsius/Fahrenheit).
+
 ## Features
 - **Real-time Weather Information**: Display current temperature, humidity, wind speed, and more.
 - **Location-based Forecasting**: Automatically detect the user's current location or allow manual location selection.
@@ -8,6 +9,7 @@ A simple weather application built with React.js that provides real-time weather
 - **Weather Alerts**: Receive alerts for severe weather in the selected locations.
 - **Customization**: Switch between temperature units (Celsius/Fahrenheit) and toggle app themes.
 - **Offline Access**: Cached weather data is available when the app is offline.
+
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
@@ -17,8 +19,19 @@ A simple weather application built with React.js that provides real-time weather
 - [Privacy & Security](#privacy--security)
 - [Contributing](#contributing)
 - [License](#license)
+
 ## Installation
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/Tsageon/WeatherApp.git
-cd weather
+cd WeatherApp
+
+### 2. Install Dependencies
+This app requires [React](https://reactjs.org/) and [React Router DOM](https://reactrouter.com/).
+```bash
+npm install
+
+### 3. Now Run the App
+```bash
+npm start
+
