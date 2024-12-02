@@ -1,180 +1,114 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
+import Loader from './loader';
+import Swal from 'sweetalert2';
 import './Fetchin.css';
 
 const API_KEY = '47dd65ecabe0cf32fae0116841fa5da5';
 const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
-const NEARBY_CITIES = [
-  { name: 'Upington', lat: -28.4520, lon: 21.2561 },
-  { name: 'Springbok', lat: -29.6643, lon: 17.8865 },
-  { name: 'Kuruman', lat: -27.4498, lon: 23.4308 },
-  { name: 'De Aar', lat: -30.6496, lon: 24.0146 },
-  { name: 'Colesberg', lat: -30.7197, lon: 25.0978 },
-  { name: 'Calvinia', lat: -31.4728, lon: 19.7764 },
-  { name: 'Douglas', lat: -29.0601, lon: 23.7732 },
-  { name: 'Kakamas', lat: -28.7746, lon: 20.6173 },
-  { name: 'Port Nolloth', lat: -29.2498, lon: 16.8681 },
-  { name: 'Hartswater', lat: -27.7351, lon: 24.7961 },
-  { name: 'Kathu', lat: -27.6957, lon: 23.0471 },
-];
-
 const Fetching = () => {
   const [location, setLocation] = useState('');
   const [weather, setWeather] = useState({});
   const [hourlyForecast, setHourlyForecast] = useState([]);
-  const [, setSurroundingProvinces] = useState([]);
   const [fiveDayForecast, setFiveDayForecast] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
-  const [, setForecastLocation] = useState('');
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [theme, setTheme] = useState('light');
-  const [, setWeatherData] = useState(null)
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [savedLocations, setSavedLocations] = useState([]);
 
-  useEffect(() => {
-    const savedData = localStorage.getItem('savedWeatherData');
-    if (savedData) {
-      setWeather(JSON.parse(savedData));
+
+  const checkSevereWeather = (weatherData) => {
+    const severeConditions = ['Thunderstorm', 'Tornado', 'Hurricane', 'Flood', 'Snow'];
+    const condition = weatherData.weather[0].main;
+  
+    if (severeConditions.includes(condition)) {
+      const warningMessage = `Severe weather detected in ${weatherData.name}: ${condition}. Please take necessary precautions.`;
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Severe Weather Alert',
+        text: warningMessage,
+        confirmButtonText: 'OK',
+      });
+  
+      const mailtoUrl = `mailto:?subject=Severe Weather Alert: ${condition}&body=${encodeURIComponent(warningMessage)}`;
+      window.location.href = mailtoUrl;
     }
-  }, []);
-
-
-  useEffect(() => {
-    const fetchWeather = (latitude, longitude) => {
-      const apiKey = '47dd65ecabe0cf32fae0116841fa5da5';
-      const apiUrl = `'https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
-
-      fetch(apiUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          setWeatherData(data);
-          localStorage.setItem('weatherData', JSON.stringify(data));
-        })
-        .catch(error => {
-          console.error('Error fetching weather data:', error);
-          setError('Error fetching weather data. Please try again later.');
-        });
-    };
-
-    if (navigator.onLine) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLat(position.coords.latitude);
-          setLong(position.coords.longitude);
-          fetchWeather(position.coords.latitude, position.coords.longitude);
-        },
-        (err) => {
-          setError('Unable to retrieve location. Please allow location access or enter a city.');
-        }
-      );
-    } else {
-
-      const savedWeatherData = localStorage.getItem('weatherData');
-      if (savedWeatherData) {
-        setWeatherData(JSON.parse(savedWeatherData));
-      } else {
-        setError('No saved weather data available. Please check your internet connection and try again.');
-      }
-    }
-  }, []);
-
+  };
 
   const fetchWeatherByCoordinates = useCallback(async (latitude, longitude) => {
     setLoading(true);
     try {
-      const weatherResponse = await axios.get(`${WEATHER_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
+      const [weatherResponse, forecastResponse] = await Promise.all([
+        axios.get(`${WEATHER_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`),
+        axios.get(`${FORECAST_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`)
+      ]);
+      
+
       setWeather(formatWeatherData(weatherResponse.data));
-      setForecastLocation(weatherResponse.data.name);
-
-      const forecastResponse = await axios.get(`${FORECAST_BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
       setHourlyForecast(forecastResponse.data.list.slice(0, 5));
-
-      const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
-      const formattedDailyData = dailyData.map((day) => ({
-        date: day.dt_txt,
-        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
-        icon: day.weather[0].icon,
-        description: day.weather[0].description,
-        temp: day.main.temp,
-        humidity: day.main.humidity,
-        wind_speed: day.wind.speed,
-      }));
-      setFiveDayForecast(formattedDailyData);
-
-      const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
-        axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
-          .then(response => ({ name: city.name, temperature: response.data.main.temp }))
-      );
-      const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
-      setSurroundingProvinces(nearbyWeatherData);
+      setFiveDayForecast(formatFiveDayForecast(forecastResponse.data.list));
 
       setError(null);
     } catch (err) {
       setError('Error fetching weather data.');
       setWeather({});
       setHourlyForecast([]);
-      setSurroundingProvinces([]);
+      setFiveDayForecast([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    if (lat && long) {
-      fetchWeatherByCoordinates(lat, long);
-    }
-  }, [lat, long, fetchWeatherByCoordinates]);
-
-  const fetchWeather = async () => {
+ 
+  const fetchWeatherByCity = async () => {
     if (!location.trim()) return;
     setLoading(true);
     try {
-      const weatherResponse = await axios.get(`${WEATHER_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`);
-      setWeather(formatWeatherData(weatherResponse.data));
-      setForecastLocation(weatherResponse.data.name);
+      const [weatherResponse, forecastResponse] = await Promise.all([
+        axios.get(`${WEATHER_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`),
+        axios.get(`${FORECAST_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`),
+      ]);
 
-      const forecastResponse = await axios.get(`${FORECAST_BASE_URL}?q=${location}&appid=${API_KEY}&units=metric`);
-      setHourlyForecast(forecastResponse.data.list.slice(0, 5));
+      const weatherData = weatherResponse.data;
+      const forecastData = forecastResponse.data;
 
-      const dailyData = forecastResponse.data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
-      const formattedDailyData = dailyData.map((day) => ({
-        date: day.dt_txt,
-        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
-        icon: day.weather[0].icon,
-        description: day.weather[0].description,
-        temp: day.main.temp,
-        humidity: day.main.humidity,
-        wind_speed: day.wind.speed,
-      }));
-      setFiveDayForecast(formattedDailyData);
+      setWeather(formatWeatherData(weatherData));
+      setHourlyForecast(forecastData.list.slice(0, 5));
+      setFiveDayForecast(formatFiveDayForecast(forecastData.list));
 
-      const nearbyWeatherPromises = NEARBY_CITIES.map(city =>
-        axios.get(`${WEATHER_BASE_URL}?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`)
-          .then(response => ({ name: city.name, temperature: response.data.main.temp }))
-      );
-      const nearbyWeatherData = await Promise.all(nearbyWeatherPromises);
-      setSurroundingProvinces(nearbyWeatherData);
+      checkSevereWeather(weatherData);
+
+      const newLocation = {
+        name: location,
+        lat: weatherData.coord.lat,
+        lon: weatherData.coord.lon,
+        weather: formatWeatherData(weatherData),
+      };
+
+      setSavedLocations(prevLocations => {
+        const updatedLocations = [...prevLocations, newLocation];
+        localStorage.setItem('savedLocations', JSON.stringify(updatedLocations));
+        return updatedLocations;
+      });
 
       setError(null);
     } catch (err) {
       setError('Error fetching weather data.');
       setWeather({});
       setHourlyForecast([]);
-      setSurroundingProvinces([]);
+      setFiveDayForecast([]);
     } finally {
       setLoading(false);
     }
   };
+
 
   const formatWeatherData = (data) => ({
     location: data.name,
@@ -185,18 +119,38 @@ const Fetching = () => {
     pressure: data.main.pressure,
     humidity: data.main.humidity,
     wind_speed: data.wind.speed,
-    wind_deg: data.wind.deg,
     visibility: data.visibility,
     description: data.weather[0].description,
     icon: data.weather[0].icon,
   });
 
-  const getWeatherIconUrl = (iconCode) => `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  const formatFiveDayForecast = (list) => {
+    return list
+      .filter(reading => reading.dt_txt.includes("12:00:00"))
+      .map(day => ({
+        date: day.dt_txt,
+        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
+        icon: day.weather[0].icon,
+        description: day.weather[0].description,
+        temp: day.main.temp,
+        humidity: day.main.humidity,
+        wind_speed: day.wind.speed,
+      }));
+  };
 
-  const toggleTemperatureUnit = () => setIsFahrenheit(!isFahrenheit);
+  const toggleTemperatureUnit = () => setIsFahrenheit(prev => !prev);
 
   const convertTemperature = (temp) => isFahrenheit ? (temp * 9 / 5 + 32).toFixed(1) : temp;
 
+  const getWeatherIconUrl = (iconCode) => `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
+  
   useEffect(() => {
     const handleNetworkChange = () => {
       setIsOnline(navigator.onLine);
@@ -204,7 +158,6 @@ const Fetching = () => {
 
     window.addEventListener('online', handleNetworkChange);
     window.addEventListener('offline', handleNetworkChange);
-
     return () => {
       window.removeEventListener('online', handleNetworkChange);
       window.removeEventListener('offline', handleNetworkChange);
@@ -213,78 +166,150 @@ const Fetching = () => {
 
   useEffect(() => {
     if (isOnline) {
-      const savedData = localStorage.getItem('savedWeatherData');
-      if (savedData) {
-        setWeather(JSON.parse(savedData));
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLat(position.coords.latitude);
+          setLong(position.coords.longitude);
+        },
+        (err) => {
+          setError('Unable to retrieve location. Please allow location access or enter a city.');
+          
+          Swal.fire({
+            icon: 'error',
+            title: 'Location Error',
+            text: 'Unable to retrieve location. Please allow location access or enter a city.',
+            confirmButtonText: 'OK',
+          });
+        }
+      );
+    } else {
+      const savedWeatherData = localStorage.getItem('savedWeatherData');
+      if (savedWeatherData) {
+        setWeather(JSON.parse(savedWeatherData));
+      } else {
+        setError('No saved weather data available. Please check your internet connection and try again.');
+
+        Swal.fire({
+          icon: 'info',
+          title: 'No Saved Weather Data',
+          text: 'No saved weather data available. Please check your internet connection and try again.',
+          confirmButtonText: 'OK',
+        });
       }
     }
   }, [isOnline]);
 
-  useEffect(() => {
 
+  useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
+  useEffect(() => {
+    const savedData = localStorage.getItem('savedLocations');
+    if (savedData) {
+      setSavedLocations(JSON.parse(savedData));
+    }
+  }, []);
+
 
   useEffect(() => {
     localStorage.setItem('savedWeatherData', JSON.stringify(weather));
   }, [weather]);
 
-  const saveWeatherData = () => {
-    localStorage.setItem('savedWeatherData', JSON.stringify(weather));
-  };
+  const fetchRef = useRef(fetchWeatherByCoordinates); 
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      saveWeatherData();
-    }, 5 * 60 * 1000);
+    fetchRef.current = fetchWeatherByCoordinates;
+  }, [fetchWeatherByCoordinates]);
 
-    return () => clearInterval(interval);
-  }, [weather]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (lat && long) {
+        await fetchRef.current(lat, long); 
+      }
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(() => {
+      if (lat && long) {
+        fetchRef.current(lat, long);
+      }
+    }, 300000); 
+
+    return () => clearInterval(intervalId); 
+  }, [lat, long]);
+
+  const removeLocation = (location) => {
+    const updatedLocations = savedLocations.filter(loc => loc.name !== location.name);
+    setSavedLocations(updatedLocations);
+    localStorage.setItem('savedLocations', JSON.stringify(updatedLocations));
+  };
+
+  const handleLocationSelect = (location) => {
+    setLocation(location.name);
+    fetchWeatherByCoordinates(location.lat, location.lon);
+  };
+
 
   return (
     <div className={`container ${theme}`}>
-      <h1 className='heading'>Weather App</h1>
-      <div className='search-container input'>
-        <input
-          type='text'
-          placeholder='Enter a city...'
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <button className="search-button" onClick={fetchWeather}>Get Weather</button>
-      </div>
-      <div className='toggle-container'> <button className="toggle-button " onClick={toggleTheme}>
-        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-      </button><button className='toggle-button ' onClick={toggleTemperatureUnit}>
-        Switch to {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
-      </button></div>
-      {loading && <p>Loading...</p>}
-      {error && <p className='error'>{error}</p>}
+    <h1 className='heading'><b><i>Weather App</i></b></h1>
+    <div className='search-container input'>
+      <input
+        type='text'
+        placeholder='Enter a city...'
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+      />
+      <button className="search-button" onClick={fetchWeatherByCity}>Get Weather</button>
+    </div>
 
-      {weather.location && (
-        <div className='weather-info'>
-          <h2>{weather.location}</h2>
-          <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
-          <div className='weather-details'>
-            <p>{convertTemperature(weather.temperature)}° {isFahrenheit ? 'F' : 'C'}</p>
-            <p>Feels Like: {convertTemperature(weather.feels_like)}° {isFahrenheit ? 'F' : 'C'}</p>
-            <p>Min: {convertTemperature(weather.temp_min)}° {isFahrenheit ? 'F' : 'C'}</p>
-            <p>Max: {convertTemperature(weather.temp_max)}° {isFahrenheit ? 'F' : 'C'}</p>
-            <p>Humidity: {weather.humidity}%</p>
-            <p>Wind Speed: {weather.wind_speed} m/s</p>
-            <p>Pressure: {weather.pressure} hPa</p>
-            <p>Visibility: {weather.visibility / 1000} km</p>
-            <p>Description: {weather.description}</p>
-          </div>
+    <div className="saved-locations">
+        <h3>Saved Locations</h3>
+        {savedLocations.length > 0 ? (
+          <ul>
+            {savedLocations.map((location, index) => (
+              <li key={index}>
+                <button onClick={() => handleLocationSelect(location)}>{location.name}</button>
+                <button onClick={() => removeLocation(location)}>Remove</button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p><i>No saved locations</i></p>
+        )}
+      </div>
+
+    <div className='toggle-container'>
+      <button className="toggle-button" onClick={toggleTheme}>
+        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
+      </button>
+      <button className='toggle-button' onClick={toggleTemperatureUnit}>
+        Switch to {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
+      </button>
+    </div>
+
+    {loading && <Loader/>}
+    {error && <p className='error'>{error}</p>}
+    {weather.location && (
+      <div className='weather-info'>
+        <h2>{weather.location}</h2>
+        <img src={getWeatherIconUrl(weather.icon)} alt={weather.description} />
+        <div className='weather-details'>
+          <p>{convertTemperature(weather.temperature)}° {isFahrenheit ? 'F' : 'C'}</p>
+          <p>Feels Like: {convertTemperature(weather.feels_like)}° {isFahrenheit ? 'F' : 'C'}</p>
+          <p>Min: {convertTemperature(weather.temp_min)}° {isFahrenheit ? 'F' : 'C'}</p>
+          <p>Max: {convertTemperature(weather.temp_max)}° {isFahrenheit ? 'F' : 'C'}</p>
+          <p>Humidity: {weather.humidity}%</p>
+          <p>Wind Speed: {weather.wind_speed} m/s</p>
+          <p>Pressure: {weather.pressure} hPa</p>
+          <p>Visibility: {weather.visibility / 1000} km</p>
+          <p>Description: {weather.description}</p>
         </div>
-      )}
+      </div>
+    )}
 
       <div className='container-forecast'>
         {hourlyForecast.length > 0 && (
@@ -298,6 +323,7 @@ const Fetching = () => {
             ))}
           </div>
         )}
+
         {fiveDayForecast.length > 0 && (
           <div className='five-day-forecast'>
             <h3>5-Day Forecast</h3>
@@ -308,7 +334,6 @@ const Fetching = () => {
                 <p>{convertTemperature(day.temp)}° {isFahrenheit ? 'F' : 'C'}</p>
                 <p>Humidity: {day.humidity}%</p>
                 <p>Wind Speed: {day.wind_speed} m/s</p>
-
               </div>
             ))}
           </div>

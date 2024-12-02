@@ -1,337 +1,431 @@
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-h3 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-.offline-alert{
-    text-align: center;
+.offline-alert {
+  text-align: center;
 }
 
 .toggle-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.8rem;
-    margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.1rem 0;
 }
 
-
 .toggle-button {
-    position: relative;
-    gap:1rem;
-    width: 12rem;
-    height: 2.1rem;
-    background-color: #007bff; 
-    margin-top: 5%;
-    border-radius: 0.3rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  position: relative;
+  gap: 1rem;
+  width: auto;
+  max-width: 12rem;
+  height: 2.5rem;
+  background-color: #007bff;
+  margin-top: 5%;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  font-size: 1rem;
 }
 
 .toggle-button::before {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 24px;
-    height: 24px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
+  content: "";
+  position: absolute;
+  text-align: center;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: royalblue;
+  border-radius: 50%;
+  transition: transform 0.3s;
 }
 
 .toggle-button.active {
-    background-color: #007bff;
+  background-color: royalblue;
 }
 
 .toggle-button.active::before {
-    transform: translateX(30px);
+  transform: translateX(1.875rem);
 }
 
-
 .toggle-label {
-    font-size: 16px;
-    color: #333;
-    margin-left: 10px;
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+  margin-left: 0.625rem;
+  flex-grow: 1;
 }
 
 .toggle-button:hover {
-    background-color: #b3d9ff;
+  background-color: darkblue;
 }
 
 .toggle-button.active:hover {
-    background-color: #007bff; 
+  background-color: #007bff;
 }
 
+.btn {
+  padding: 0.625rem;
+  font-size: 1rem;
+  margin-left: 0.625rem;
 
-@media (max-width: 768px) {
-    .toggle-button {
-        width: 50px;
-        height: 25px;
-    }
-    .toggle-button::before {
-        width: 20px;
-        height: 20px;
-    }
-    .toggle-label {
-        font-size: 14px;
-    }
-}
-
-.btn{
-    padding: 10px;
-    font-size: 16px;
-    margin-left: 10px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  border: none;
+  text-align: center;
+  background-color: #007bff;
+  color: white;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px; 
+  background: white;
+  border-radius: 0.625rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.625rem;
 }
-
 
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0 auto;
+  padding: 2.5rem 0.625rem;
 }
-
 
 .heading {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 1.25rem;
 }
 
-
 .search-container {
-    padding-left: 10%;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
+  padding-left: 10%;
+  width: 100%;
+  max-width: 37.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .search-container input {
-    text-align: center;
-    padding: 10px;
-    font-size: 16px;
-    width: 25rem;
-    flex: 1;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    outline: none;
+  text-align: center;
+  padding: 0.625rem;
+  font-size: 1rem;
+  width: 25rem;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  outline: none;
 }
 
 .search-button {
-    padding: 10px;
-    font-size: 16px;
-    margin-left: 10px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  padding: 0.625rem;
+  font-size: 1rem;
+  margin-left: 0.625rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .search-container button:disabled {
-    background-color: #d9d9d9;
-    cursor: not-allowed;
+  background-color: #d9d9d9;
+  cursor: not-allowed;
 }
 
 .search-container button:hover:not(:disabled) {
-    background-color: #b3d9ff;
+  background-color: #b3d9ff;
 }
 
 .error {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
+  color: red;
+  text-align: center;
+  margin-top: 0.625rem;
 }
 
-
 .main-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
 }
 
 .container.light {
-    background-color: white;
-    color: black;
-  }
-  
-  .container.dark {
-    background-color: rgb(23, 49, 58);
-    color: black;
-  }
-  
-  .toggle-theme-button {
-    margin-bottom: 20px;
-  }
-
-.weather-info {
-    text-align: center;
-    background: #fff; 
-    border-radius: 10px;
-    padding: 20px;
-    width: 600px;
-    margin: 10px 0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  color: black;
 }
 
+.container.dark {
+  background-color: rgb(23, 49, 58);
+  color: black;
+}
+
+.toggle-theme-button {
+  margin-bottom: 1.25rem;
+}
+
+.weather-info {
+  text-align: center;
+  background: #fff;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  width: 37.5rem;
+  margin: 0.625rem 0;
+  box-shadow: 0rem 2px 5px rgba(0, 0, 0, 0.1);
+}
 
 .weather-details {
-    display: flex; 
-    justify-content: center;
-    align-items: center;
-    gap: 10px; 
-    text-align: center;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  text-align: center;
 }
 
 .weather-details p {
-    margin: 5px 0;
-}
-
-
-.surrounding-provinces ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.surrounding-provinces li {
-    margin: 10px 0;
+  margin: 5px 0;
+  text-align: center;
 }
 
 .forecast-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  width: 100%;
+  margin-top: 1.25rem;
 }
 
 .hourly-forecast,
 .five-day-forecast {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    width: 600px;
-    margin: 10px 0; 
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 10px 10px #ccc;
-    border-radius: 20px;
+  background: #fff;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  width: 600px;
+  margin: 0.625rem 0;
+  box-shadow: 0rem 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0.625rem 0.625rem #ccc;
+  border-radius: 1.25rem;
 }
-
-
 
 .hourly-forecast > div,
 .five-day-forecast > div {
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between;
-    text-align: center;
-    margin-bottom: 10px; 
-    padding: 10px;
-    border-radius: 8px; 
-    transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  margin-bottom: 0.625rem;
+  padding: 0.625rem;
+  border-radius: 8px;
+  transition: background 0.3s;
 }
 
 .hourly-forecast > div,
-.five-day-forecast > div:hover{
-    background-color: #e0e0e0;
-}
-.hourly-forecast > div{
-    width: 60%;
-    background-color: #e0e0e0;
-    box-shadow: 5px 5px rgb(105, 105, 105);
-    margin: 10px auto;
-    padding: 10px 2rem;
+.five-day-forecast > div:hover {
+  background-color: #e0e0e0;
 }
 
-.hourly-item p, .forecast-item p {
-    margin: 5px 0;
+.hourly-forecast > div {
+  width: 60%;
+  background-color: #e0e0e0;
+  box-shadow: 0.3125rem 0.3125rem rgb(105, 105, 105);
+  margin: 0.625rem auto;
+  padding: 0.625rem 2rem;
+}
+
+.hourly-item p,
+.forecast-item p {
+  margin: 0.3125rem 0;
+  text-align: center;
 }
 
 .forecast-item .day {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .forecast-item .date {
-    font-size: 14px;
-    color: black;
+  font-size: 0.875rem;
+  color: black;
 }
 
-.forecast-item img, .hourly-item img {
-    width: 50px;
-    height: 50px;
+.forecast-item img,
+.hourly-item img {
+  width:3.125rem;
+  height: 3.125rem;
 }
 
 .hourly-forecast {
-    margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .forecast-grid {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 0.625rem;
 }
 
-.container-forecast{
-    width: 100%;
-    display: flex;
-    gap: 2rem;
+.container-forecast {
+  width: 100%;
+  display: flex;
+  gap: 2rem;
 }
 
-.weather-details{
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+.weather-details {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
-.weather-details p{
-    width: 30%;
+.weather-details p {
+  width: 30%;
 }
 
-/* Responsive Adjustments */
+.saved-locations {
+  background-color: white;
+  text-align: center;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem whitesmoke;
+  margin-top: 1.25rem;
+}
+
+.saved-locations h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.876rem;
+  color: #333;
+}
+
+.saved-locations ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.saved-locations li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem;
+  border-bottom: 0.0625rem solid #ddd;
+  margin-bottom: 0.625rem;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.saved-locations button {
+  padding: 0.5em 12px;
+  border: none;
+  background-color: gray;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.saved-locations button:hover {
+  background-color: #0056b3;
+}
+
+.saved-locations button:last-child {
+  background-color: #dc3545;
+  margin-left: 0.625rem;
+}
+
+.saved-locations button:last-child:hover {
+  background-color: #c82333;
+}
+
+.saved-locations p {
+  font-size: 1rem;
+  color: #555;
+}
+
 @media (max-width: 768px) {
-    .container {
-        padding: 20px;
-    }
+  .container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 1.25rem;
+  }
 
-    .weather-details {
-        flex-direction: column; /* Stack items vertically on smaller screens */
-    }
+  .weather-details {
+    flex-direction: column;
+  }
 
-    .forecast, .hourly-forecast {
-        min-width: 100%;
-    }
+  .forecast,
+  .hourly-forecast {
+    min-width: 100%;
+  }
+
+  .toggle-button {
+    width: 100%;
+    height: auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .toggle-button::before {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .toggle-label {
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .toggle-label {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-container input {
+    width: 100%;
+    max-width: 18.75rem;
+  }
+
+  .weather-info,
+  .hourly-forecast,
+  .five-day-forecast {
+    width: 100%;
+    margin: 0.625rem 0;
+  }
+
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:0.625rem;
+  }
+
+  .forecast-grid {
+    flex-direction: column;
+  }
+
+  .container-forecast {
+    display: block;
+  }
 }
