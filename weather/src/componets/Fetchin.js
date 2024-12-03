@@ -150,32 +150,46 @@ const Fetching = () => {
     }
   };
 
-
-
-  
   useEffect(() => {
     const handleNetworkChange = () => {
-      setIsOnline(navigator.onLine);
+      console.log('Network status changed:', navigator.onLine);
+      const onlineStatus = navigator.onLine;
+      setIsOnline(onlineStatus);
+  
+      if (onlineStatus) {
+        console.log('Online status detected. Showing success alert.');
+        Swal.fire({
+          icon: 'success',
+          title: 'You are back online!',
+          text: 'Everything is back to normal.',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        console.log('Offline status detected. Showing error alert.');
+        Swal.fire({
+          icon: 'error',
+          title: 'You are offline!',
+          text: 'Some features may not be available until you are back online.',
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      }
     };
-
+  
     window.addEventListener('online', handleNetworkChange);
     window.addEventListener('offline', handleNetworkChange);
-    return () => {
-      window.removeEventListener('online', handleNetworkChange);
-      window.removeEventListener('offline', handleNetworkChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isOnline) {
+  
+    if (navigator.onLine) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setLat(position.coords.latitude);
           setLong(position.coords.longitude);
         },
         (err) => {
+          console.log('Geolocation error:', err);
           setError('Unable to retrieve location. Please allow location access or enter a city.');
-          
+  
           Swal.fire({
             icon: 'error',
             title: 'Location Error',
@@ -190,7 +204,7 @@ const Fetching = () => {
         setWeather(JSON.parse(savedWeatherData));
       } else {
         setError('No saved weather data available. Please check your internet connection and try again.');
-
+  
         Swal.fire({
           icon: 'info',
           title: 'No Saved Weather Data',
@@ -199,7 +213,14 @@ const Fetching = () => {
         });
       }
     }
-  }, [isOnline]);
+  
+  
+    return () => {
+      window.removeEventListener('online', handleNetworkChange);
+      window.removeEventListener('offline', handleNetworkChange);
+    };
+  }, [isOnline]); 
+  
 
 
   useEffect(() => {

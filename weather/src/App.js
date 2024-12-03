@@ -8,7 +8,7 @@ import ErrorBoundary from './componets/error';
 
 
 function App() {
-    return (
+   return (
       <ErrorBoundary>
       <Router>
       <div>
