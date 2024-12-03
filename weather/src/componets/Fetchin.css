@@ -2,75 +2,10 @@
   text-align: center;
 }
 
-.toggle-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin: 1.1rem 0;
-}
-
-.toggle-button {
-  position: relative;
-  gap: 1rem;
-  width: auto;
-  max-width: 12rem;
-  height: 2.5rem;
-  background-color: #007bff;
-  margin-top: 5%;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;
-  font-size: 1rem;
-}
-
-.toggle-button::before {
-  content: "";
-  position: absolute;
-  text-align: center;
-  top: 0.1875rem;
-  left: 0.1875rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  background-color: royalblue;
-  border-radius: 50%;
-  transition: transform 0.3s;
-}
-
-.toggle-button.active {
-  background-color: royalblue;
-}
-
-.toggle-button.active::before {
-  transform: translateX(1.875rem);
-}
-
-.toggle-label {
-  text-align: center;
-  font-size: 1rem;
-  color: #333;
-  margin-left: 0.625rem;
-  flex-grow: 1;
-}
-
-.toggle-button:hover {
-  background-color: darkblue;
-}
-
-.toggle-button.active:hover {
-  background-color: #007bff;
-}
-
 .btn {
   padding: 0.625rem;
   font-size: 1rem;
   margin-left: 0.625rem;
-
   border: none;
   text-align: center;
   background-color: #007bff;
@@ -97,9 +32,12 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  width: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 2.5rem 0.625rem;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .heading {
@@ -160,20 +98,88 @@
   justify-content: center;
   gap: 1.25rem;
   width: 100%;
+  max-width: 100%;
 }
 
 .container.light {
   background-color: white;
+  width: auto;
   color: black;
 }
 
 .container.dark {
   background-color: rgb(23, 49, 58);
+  width: fit-content;
   color: black;
 }
 
 .toggle-theme-button {
   margin-bottom: 1.25rem;
+}
+
+.toggle-button {
+  position: relative;
+  gap: 1rem;
+  width: auto;
+  max-width: 10rem;
+  height: 2.5rem;
+  background-color:  #007bff;
+  color: white;
+  margin-top: 5%;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  font-size: 1rem;
+}
+
+.toggle-button::before {
+  content: "";
+  position: absolute;
+  text-align: center;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: royalblue;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-button.active {
+  background-color: blue;
+}
+
+.toggle-button.active::before {
+  transform: translateX(1.875rem);
+}
+
+.toggle-label {
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+  margin-left: 0.625rem;
+  flex-grow: 1;
+}
+
+.toggle-button:hover {
+  background-color: darkblue;
+}
+
+.toggle-button.active:hover {
+  background-color: #007bff;
+}
+
+.toggle-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.1rem 0;
 }
 
 .weather-info {
@@ -196,7 +202,7 @@
 }
 
 .weather-details p {
-  margin: 5px 0;
+  margin: 0.3rem 0;
   text-align: center;
 }
 
@@ -235,7 +241,8 @@
   text-align: center;
   margin-bottom: 0.625rem;
   padding: 0.625rem;
-  border-radius: 8px;
+  border-radius: 	
+  0.5rem;
   transition: background 0.3s;
 }
 
@@ -326,7 +333,7 @@
   border-bottom: 0.0625rem solid #ddd;
   margin-bottom: 0.625rem;
   background-color: #fff;
-  border-radius: 5px;
+  border-radius: 	0.313rem;
 }
 
 .saved-locations button {
@@ -336,7 +343,7 @@
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 	0.313rem;
   transition: background-color 0.3s ease;
 }
 
@@ -356,6 +363,197 @@
 .saved-locations p {
   font-size: 1rem;
   color: #555;
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 1rem;
+    margin: 0 auto;
+  }
+
+  .weather-info,
+  .hourly-forecast,
+  .five-day-forecast {
+    width: 100%;
+    margin: 0.625rem 0;
+  }
+
+  .toggle-button {
+    width: 100%;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .toggle-label {
+    font-size: 0.75rem;
+  }
+
+  .search-container input {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1.25rem;
+    padding: 0.5rem;
+  }
+
+  .search-button {
+    width: 100%;
+    padding: 1rem;
+    margin-left: 0;
+  }
+
+  .main-content {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .saved-locations li {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0.625rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-locations button:last-child {
+    width: 100%;
+    margin-top: 0.625rem;
+  }
+
+  .card {
+    padding: 1rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .btn, .search-button, .saved-locations button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    margin-left: 0;
+    margin-top: 0.625rem;
+  }
+
+  .heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .toggle-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .weather-details {
+    flex-direction: column;
+  }
+
+  .hourly-forecast > div,
+  .five-day-forecast > div {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .saved-locations {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin: 0 auto;
+    padding: 1.25rem; 
+  }
+
+  .weather-info,
+  .hourly-forecast,
+  .five-day-forecast {
+    width: 100%; 
+    margin: 0.625rem 0;
+  }
+
+  .toggle-button {
+    width: 100%;
+    padding: 0.625rem 2rem;
+    font-size: 0.9rem;
+  }
+
+  .toggle-label {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+
+  .search-container input {
+    width: 100%;
+    margin-right: 1%;
+    margin-bottom: 1.25rem; 
+  }
+
+  .main-content {
+    flex-direction: column;
+    gap: 1rem; 
+  }
+
+  .saved-locations li {
+    flex-direction: column; 
+    align-items: flex-start;
+    padding: 0.625rem 1rem;
+  }
+
+  .saved-locations button:last-child {
+    width: 100%; 
+    margin-top: 0.625rem;
+  }
+
+  .btn,
+  .search-button,
+  .saved-locations button {
+    width: 100%;
+    font-size: 1rem; 
+    padding: 1rem;
+    margin-left: 1%;
+    margin-top: 0.625rem;
+  }
+
+  .hourly-forecast > div,
+  .five-day-forecast > div {
+    flex-direction: column; 
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .card {
+    padding: 1rem;
+    width: 90%; 
+    margin: 0 auto;
+  }
+
+  .toggle-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .heading {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+
+  .search-container input {
+    width: calc(100% - 2rem)
+  }
+
+  .saved-locations {
+    padding: 1.25rem;
+  }
+
+  .btn, .search-button, .saved-locations button {
+    padding: 1rem;
+    font-size: 1rem;
+    margin-left: 0;
+    margin-top: 0.625rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -427,5 +625,4 @@
 
   .container-forecast {
     display: block;
-  }
-}
+  }}

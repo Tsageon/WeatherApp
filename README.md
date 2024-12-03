@@ -8,7 +8,7 @@ A simple weather application built with React.js that provides real-time weather
 - **Multiple Locations**: Save and switch between multiple locations to check weather conditions.
 - **Weather Alerts**: Receive alerts for severe weather in the selected locations.
 - **Customization**: Switch between temperature units (Celsius/Fahrenheit) and toggle app themes.
-- **Offline Access**: Cached weather data is available when the app is offline.
+- **Offline Access**: Cached weather data is available when the app is offline kinda.
 
 ## Table of Contents
 - [Features](#features)

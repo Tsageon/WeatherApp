@@ -22,6 +22,47 @@ const Fetching = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [savedLocations, setSavedLocations] = useState([]);
 
+  const formatWeatherData = (data) => ({
+    location: data.name,
+    temperature: data.main.temp,
+    feels_like: data.main.feels_like,
+    temp_min: data.main.temp_min,
+    temp_max: data.main.temp_max,
+    pressure: data.main.pressure,
+    humidity: data.main.humidity,
+    wind_speed: data.wind.speed,
+    visibility: data.visibility,
+    description: data.weather[0].description,
+    icon: data.weather[0].icon,
+  });
+
+  const formatFiveDayForecast = (list) => {
+    return list
+      .filter(reading => reading.dt_txt.includes("12:00:00"))
+      .map(day => ({
+        date: day.dt_txt,
+        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
+        icon: day.weather[0].icon,
+        description: day.weather[0].description,
+        temp: day.main.temp,
+        humidity: day.main.humidity,
+        wind_speed: day.wind.speed,
+      }));
+  };
+
+  const toggleTemperatureUnit = () => setIsFahrenheit(prev => !prev);
+
+  const convertTemperature = (temp) => isFahrenheit ? (temp * 9 / 5 + 32).toFixed(1) : temp;
+
+  const getWeatherIconUrl = (iconCode) => `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
+
 
   const checkSevereWeather = (weatherData) => {
     const severeConditions = ['Thunderstorm', 'Tornado', 'Hurricane', 'Flood', 'Snow'];
@@ -110,45 +151,6 @@ const Fetching = () => {
   };
 
 
-  const formatWeatherData = (data) => ({
-    location: data.name,
-    temperature: data.main.temp,
-    feels_like: data.main.feels_like,
-    temp_min: data.main.temp_min,
-    temp_max: data.main.temp_max,
-    pressure: data.main.pressure,
-    humidity: data.main.humidity,
-    wind_speed: data.wind.speed,
-    visibility: data.visibility,
-    description: data.weather[0].description,
-    icon: data.weather[0].icon,
-  });
-
-  const formatFiveDayForecast = (list) => {
-    return list
-      .filter(reading => reading.dt_txt.includes("12:00:00"))
-      .map(day => ({
-        date: day.dt_txt,
-        dayOfWeek: new Date(day.dt_txt).toLocaleDateString('en-US', { weekday: 'long' }),
-        icon: day.weather[0].icon,
-        description: day.weather[0].description,
-        temp: day.main.temp,
-        humidity: day.main.humidity,
-        wind_speed: day.wind.speed,
-      }));
-  };
-
-  const toggleTemperatureUnit = () => setIsFahrenheit(prev => !prev);
-
-  const convertTemperature = (temp) => isFahrenheit ? (temp * 9 / 5 + 32).toFixed(1) : temp;
-
-  const getWeatherIconUrl = (iconCode) => `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
 
   
   useEffect(() => {

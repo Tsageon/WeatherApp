@@ -3,9 +3,13 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Privacy from './componets/Privacy';
 import Home from './componets/Fetchin';
+import ErrorBoundary from './componets/error';
+
+
 
 function App() {
     return (
+      <ErrorBoundary>
       <Router>
       <div>
         <nav style={{ 
@@ -14,21 +18,21 @@ function App() {
           justifyContent: 'center', 
           alignItems: 'center', 
           backgroundColor: 'gray', 
-          padding: '10px' 
+          padding: '0.6rem' 
         }}>
           <Link to="/" style={{ 
             color: 'white', 
             textDecoration: 'none', 
-            padding: '10px', 
-            margin: '0 15px', 
-            fontSize: '18px' 
+            padding: '0.6rem', 
+            margin: '0 0.9rem', 
+            fontSize: '1.1rem' 
           }}>Home</Link>
           <Link to="/privacy" style={{ 
             color: 'white', 
             textDecoration: 'none', 
-            padding: '10px', 
-            margin: '0 15px', 
-            fontSize: '18px' 
+            padding: '0.6rem', 
+            margin: '0 0.9rem', 
+            fontSize: '1.1rem' 
           }}>Privacy Policy</Link>
         </nav>
         <Routes>
@@ -37,7 +41,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-    
+    </ErrorBoundary>   
     );
 }
 

@@ -1,6 +1,8 @@
-body{
-  background-color: whitesmoke;
+html, body {
+  width: 100%;
+  overflow-x: hidden;
 }
+
 nav {
   display: flex;
   justify-content: center;
